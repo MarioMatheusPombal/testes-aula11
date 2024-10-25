@@ -13,14 +13,26 @@ def step_user_on_bing_homepage(context):
         EC.presence_of_element_located((By.ID, 'sb_form_q'))
     )
 
+
 @when('o usuário buscar por "{query}"')
 def step_user_searches_for(context, query):
+    # Aceitar cookies ou fechar pop-up, se necessário
+    try:
+        accept_button = WebDriverWait(context.driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, '.bnp_btn_accept'))
+        )
+        accept_button.click()
+    except Exception as e:
+        print("Botão de aceitar cookies não encontrado ou não clicável.")
+        pass  # Se o botão não estiver presente, continue
+
     searchbox = WebDriverWait(context.driver, 100).until(
         EC.element_to_be_clickable((By.ID, 'sb_form_q'))
     )
     searchbox.clear()
     searchbox.send_keys(query)
     searchbox.send_keys(Keys.RETURN)
+
 
 @then('a página de resultados deve ser exibida')
 def step_search_results_displayed(context):
@@ -37,6 +49,7 @@ def step_search_results_displayed(context):
         context.driver.save_screenshot(screenshot_path)
         print(f"Screenshot salva em {screenshot_path}")
         raise e
+
 
 @then('os resultados devem conter "{keyword}"')
 def step_results_contain_keyword(context, keyword):

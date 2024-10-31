@@ -9,19 +9,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 from behave import given, when, then
 import time
 
-# Feature File: features/ShoppingCartFlow.feature
-"""
-Feature: Fluxo do Carrinho de Compras
-  Scenario: Usuário adiciona e remove itens do carrinho de compras
-    Given Usuário está na página inicial da loja online
-    When Usuário adiciona um item ao carrinho de compras
-    And Usuário visualiza o carrinho de compras
-    Then O item é exibido no carrinho de compras
-    When Usuário remove o item do carrinho de compras
-    Then O carrinho de compras está vazio
-"""
-
-# Step Definitions: steps/shopping_cart_steps.py
 from behave import use_step_matcher
 
 use_step_matcher("re")
@@ -29,7 +16,7 @@ use_step_matcher("re")
 @given("Usuário está na página inicial da loja online")
 def user_is_on_the_online_store_homepage(context):
     context.driver.get("https://www.demoblaze.com")
-    time.sleep(3)  # Aguardar um tempo para garantir que a página esteja completamente carregada
+    time.sleep(3)
 
 @when("Usuário adiciona um item ao carrinho de compras")
 def user_adds_an_item_to_the_shopping_cart(context):
@@ -60,14 +47,11 @@ def the_shopping_cart_is_empty(context):
     cart_empty = WebDriverWait(context.driver, 10).until(EC.invisibility_of_element_located((By.XPATH, "//td[text()='Samsung galaxy s6']")))
     assert cart_empty
 
-# Hooks: environment.py
-# Crie um arquivo chamado environment.py na mesma pasta que o arquivo .feature
-
 def before_scenario(context, scenario):
     if "Fluxo do Carrinho de Compras" in scenario.feature.name:
         context.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
         context.driver.get("https://www.demoblaze.com")
-        time.sleep(3)  # Aguardar um tempo para garantir que a página esteja completamente carregada
+        time.sleep(3)
 
 def after_scenario(context, scenario):
     if hasattr(context, 'driver'):
